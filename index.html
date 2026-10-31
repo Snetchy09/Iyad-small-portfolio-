@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090a10">
+<meta name="description" content="Iyad's personal site. High school student from Tlemcen, Algeria who likes coding, electronics and drawing.">
+<title>Iyad</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#about">iyad</a>
+  <nav>
+    <a href="#about" class="active">About</a>
+    <a href="#contact">Contact</a>
+    <a href="#game">Ping pong</a>
+  </nav>
+</header>
+
+<main>
+  <section id="about" class="page active">
+    <h1>Hi, I'm Iyad.</h1>
+    <p>I'm a high school student from Tlemcen, Algeria. I like making things, mostly small coding projects and electronics.</p>
+    <div class="buttons">
+      <a href="#contact" class="btn primary">Contact me</a>
+      <a href="#game" class="btn">Play ping pong</a>
+    </div>
+
+    <h2>About me</h2>
+    <p>I'm studying for my Baccalaureate at the moment. I know some coding and I like messing around with software, electronics and design. I'm still learning, and most projects teach me something new.</p>
+    <p>I also draw and enjoy anything creative, especially when an idea ends up as something that actually works.</p>
+
+    <h2>What I'm into</h2>
+    <ul>
+      <li><strong>Coding:</strong> small projects and experiments.</li>
+      <li><strong>Hardware:</strong> electronics, PCBs and robotics.</li>
+      <li><strong>Art and design:</strong> drawing and trying out visual ideas.</li>
+    </ul>
+
+    <h2>Right now</h2>
+    <p>Studying for the bac and working on small projects.</p>
+  </section>
+
+  <section id="contact" class="page">
+    <h1>Contact</h1>
+    <p>Got an idea, a project, or just want to talk? You can reach me here.</p>
+    <div class="contact">
+      <a href="mailto:daliyoucefiyad2009@gmail.com"><strong>Email</strong>daliyoucefiyad2009@gmail.com</a>
+      <a href="https://github.com/Snetchy09" target="_blank" rel="noopener"><strong>GitHub</strong>@Snetchy09</a>
+      <a href="https://instagram.com/idie_makr" target="_blank" rel="noopener"><strong>Instagram</strong>@idie_makr</a>
+    </div>
+  </section>
+
+  <section id="game" class="page">
+    <h1>Ping pong</h1>
+    <p>you know how to play that i shouldn't tell you how , i don't even know why i choosed to add it in the first place?</p>
+    <div class="game-box">
+      <div class="score">
+        <div><small>YOU</small><strong id="playerScore">0</strong></div>
+        <div><small>CPU</small><strong id="cpuScore">0</strong></div>
+      </div>
+      <canvas id="pong" width="600" height="360"></canvas>
+      <div class="game-controls">
+        <button id="startGame" class="btn primary">Start</button>
+        <button id="resetGame" class="btn">Restart</button>
+      </div>
+      <p class="help">W / S or the arrow keys on desktop. On mobile, drag your finger on the game.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>Iyad</span>
+  <span>2026</span>
+</footer>
+
+<script>
+const pages = document.querySelectorAll('.page');
+const links = document.querySelectorAll('nav a');
+
+function show() {
+  const id = location.hash.slice(1) || 'about';
+  const page = document.getElementById(id);
+  if (!page || !page.classList.contains('page')) {
+    location.hash = 'about';
+    return;
+  }
+  pages.forEach((p) => p.classList.toggle('active', p === page));
+  links.forEach((a) => a.classList.toggle('active', a.hash === '#' + id));
+}
+window.addEventListener('hashchange', show);
+show();
+
+const cv = document.getElementById('pong');
+const g = cv.getContext('2d');
+const youEl = document.getElementById('playerScore');
+const cpuEl = document.getElementById('cpuScore');
+const startBtn = document.getElementById('startGame');
+
+const clamp = (y) => Math.max(0, Math.min(290, y));
+let you = 145, cpu = 145, score = [0, 0], running = false, raf, ball;
+
+function serve(dir = 1) {
+  ball = { x: 300, y: 180, dx: 4 * dir, dy: Math.random() * 4 - 2 };
+}
+
+function draw() {
+  g.fillStyle = '#151722';
+  g.fillRect(0, 0, 600, 360);
+  g.setLineDash([8, 10]);
+  g.strokeStyle = '#444657';
+  g.beginPath();
+  g.moveTo(300, 0);
+  g.lineTo(300, 360);
+  g.stroke();
+  g.setLineDash([]);
+  g.fillStyle = '#a58bff';
+  g.fillRect(15, you, 10, 70);
+  g.fillStyle = '#70d9c0';
+  g.fillRect(575, cpu, 10, 70);
+  g.fillStyle = '#fff';
+  g.beginPath();
+  g.arc(ball.x, ball.y, 7, 0, Math.PI * 2);
+  g.fill();
+}
+
+function update() {
+  if (!running) return;
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+  if (ball.y < 7 || ball.y > 353) ball.dy *= -1;
+  if (ball.x < 32 && ball.y > you && ball.y < you + 70) ball.dx = Math.abs(ball.dx) * 1.04;
+  if (ball.x > 568 && ball.y > cpu && ball.y < cpu + 70) ball.dx = -Math.abs(ball.dx) * 1.04;
+
+  cpu = clamp(cpu + (ball.y - 35 - cpu) * 0.07);
+
+  if (ball.x < 0) { score[1]++; serve(1); }
+  if (ball.x > 600) { score[0]++; serve(-1); }
+
+  youEl.textContent = score[0];
+  cpuEl.textContent = score[1];
+  draw();
+  raf = requestAnimationFrame(update);
+}
+
+function stop() {
+  running = false;
+  cancelAnimationFrame(raf);
+  startBtn.textContent = 'Start';
+  draw();
+}
+
+startBtn.onclick = () => {
+  if (running) return;
+  running = true;
+  startBtn.textContent = 'Playing...';
+  update();
+};
+
+document.getElementById('resetGame').onclick = () => {
+  stop();
+  score = [0, 0];
+  you = cpu = 145;
+  serve();
+  youEl.textContent = cpuEl.textContent = 0;
+  draw();
+};
+
+function moveTo(clientY) {
+  const r = cv.getBoundingClientRect();
+  you = clamp((clientY - r.top) * 360 / r.height - 35);
+  if (!running) draw();
+}
+
+document.addEventListener('keydown', (e) => {
+  const k = e.key.toLowerCase();
+  const up = k === 'arrowup' || k === 'w', down = k === 'arrowdown' || k === 's';
+  if (!up && !down) return;
+  e.preventDefault();
+  you = clamp(you + (up ? -24 : 24));
+  if (!running) draw();
+});
+
+cv.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'touch' || e.buttons) moveTo(e.clientY);
+});
+cv.addEventListener('pointerdown', (e) => {
+  cv.setPointerCapture(e.pointerId);
+  moveTo(e.clientY);
+});
+
+serve();
+draw();
+</script>
+</body>
+</html>
