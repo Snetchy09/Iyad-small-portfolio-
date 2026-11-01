@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#090a10">
-<meta name="description" content="Iyad's personal site. High school student from Tlemcen, Algeria who likes coding, electronics and drawing.">
+<meta name="description" content="Iyad's personal site. Student from Tlemcen, Algeria.">
 <title>Iyad</title>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -22,30 +22,26 @@
 <main>
   <section id="about" class="page active">
     <h1>Hi, I'm Iyad.</h1>
-    <p>I'm a high school student from Tlemcen, Algeria. I like making things, mostly small coding projects and electronics.</p>
+    <p>High school student from Tlemcen, Algeria. When I have free time I build stuff, mostly code and electronics.</p>
     <div class="buttons">
-      <a href="#contact" class="btn primary">Contact me</a>
-      <a href="#game" class="btn">Play ping pong</a>
+      <a href="#contact" class="btn primary">Contact</a>
+      <a href="#game" class="btn">Ping pong</a>
     </div>
 
     <h2>About me</h2>
-    <p>I'm studying for my Baccalaureate at the moment. I know some coding and I like messing around with software, electronics and design. I'm still learning, and most projects teach me something new.</p>
-    <p>I also draw and enjoy anything creative, especially when an idea ends up as something that actually works.</p>
+    <p>I'm working toward my Baccalaureate right now. In my free time I code a little, mess around with electronics and draw. I'm still learning all of it so don't expect anything fancy.</p>
 
     <h2>What I'm into</h2>
     <ul>
-      <li><strong>Coding:</strong> small projects and experiments.</li>
-      <li><strong>Hardware:</strong> electronics, PCBs and robotics.</li>
-      <li><strong>Art and design:</strong> drawing and trying out visual ideas.</li>
+      <li>Coding, mostly small things to try out ideas</li>
+      <li>Hardware like PCBs, robotics and basic electronics</li>
+      <li>Drawing and design</li>
     </ul>
-
-    <h2>Right now</h2>
-    <p>Studying for the bac and working on small projects.</p>
   </section>
 
   <section id="contact" class="page">
     <h1>Contact</h1>
-    <p>Got an idea, a project, or just want to talk? You can reach me here.</p>
+    <p>Email is the easiest way to reach me, or find me on GitHub and Instagram.</p>
     <div class="contact">
       <a href="mailto:daliyoucefiyad2009@gmail.com"><strong>Email</strong>daliyoucefiyad2009@gmail.com</a>
       <a href="https://github.com/Snetchy09" target="_blank" rel="noopener"><strong>GitHub</strong>@Snetchy09</a>
@@ -66,7 +62,7 @@
         <button id="startGame" class="btn primary">Start</button>
         <button id="resetGame" class="btn">Restart</button>
       </div>
-      <p class="help">W / S or the arrow keys on desktop. On mobile, drag your finger on the game.</p>
+      <p class="help">W / S or arrow keys on desktop, drag your finger on mobile.</p>
     </div>
   </section>
 </main>
@@ -77,122 +73,158 @@
 </footer>
 
 <script>
-const pages = document.querySelectorAll('.page');
-const links = document.querySelectorAll('nav a');
+// page switching uses the url hash
+var pages = document.querySelectorAll(".page");
+var navLinks = document.querySelectorAll("nav a");
 
-function show() {
-  const id = location.hash.slice(1) || 'about';
-  const page = document.getElementById(id);
-  if (!page || !page.classList.contains('page')) {
-    location.hash = 'about';
+function showPage() {
+  var id = location.hash.replace("#", "") || "about";
+  var page = document.getElementById(id);
+  if (!page || !page.classList.contains("page")) {
+    location.hash = "about";
     return;
   }
-  pages.forEach((p) => p.classList.toggle('active', p === page));
-  links.forEach((a) => a.classList.toggle('active', a.hash === '#' + id));
+  for (var i = 0; i < pages.length; i++) {
+    pages[i].classList.remove("active");
+  }
+  page.classList.add("active");
+  for (var j = 0; j < navLinks.length; j++) {
+    if (navLinks[j].hash == "#" + id) navLinks[j].classList.add("active");
+    else navLinks[j].classList.remove("active");
+  }
 }
-window.addEventListener('hashchange', show);
-show();
+window.onhashchange = showPage;
+showPage();
 
-const cv = document.getElementById('pong');
-const g = cv.getContext('2d');
-const youEl = document.getElementById('playerScore');
-const cpuEl = document.getElementById('cpuScore');
-const startBtn = document.getElementById('startGame');
 
-const clamp = (y) => Math.max(0, Math.min(290, y));
-let you = 145, cpu = 145, score = [0, 0], running = false, raf, ball;
+var canvas = document.getElementById("pong");
+var c = canvas.getContext("2d");
+var startBtn = document.getElementById("startGame");
+var padH = 70;
+var maxY = 360 - padH;
+var myY = 145, cpuY = 145;
+var myScore = 0, cpuScore = 0;
+var playing = false, loop, ball;
 
-function serve(dir = 1) {
-  ball = { x: 300, y: 180, dx: 4 * dir, dy: Math.random() * 4 - 2 };
+function limit(y) {
+  if (y < 0) return 0;
+  if (y > maxY) return maxY;
+  return y;
+}
+
+function newBall(dir) {
+  ball = { x: 300, y: 180, dx: 4 * (dir || 1), dy: Math.random() * 4 - 2 };
+}
+
+function showScore() {
+  document.getElementById("playerScore").textContent = myScore;
+  document.getElementById("cpuScore").textContent = cpuScore;
 }
 
 function draw() {
-  g.fillStyle = '#151722';
-  g.fillRect(0, 0, 600, 360);
-  g.setLineDash([8, 10]);
-  g.strokeStyle = '#444657';
-  g.beginPath();
-  g.moveTo(300, 0);
-  g.lineTo(300, 360);
-  g.stroke();
-  g.setLineDash([]);
-  g.fillStyle = '#a58bff';
-  g.fillRect(15, you, 10, 70);
-  g.fillStyle = '#70d9c0';
-  g.fillRect(575, cpu, 10, 70);
-  g.fillStyle = '#fff';
-  g.beginPath();
-  g.arc(ball.x, ball.y, 7, 0, Math.PI * 2);
-  g.fill();
+  c.fillStyle = "#151722";
+  c.fillRect(0, 0, 600, 360);
+
+  c.setLineDash([8, 10]);
+  c.strokeStyle = "#444657";
+  c.beginPath();
+  c.moveTo(300, 0);
+  c.lineTo(300, 360);
+  c.stroke();
+  c.setLineDash([]);
+
+  c.fillStyle = "#a58bff";
+  c.fillRect(15, myY, 10, padH);
+  c.fillStyle = "#70d9c0";
+  c.fillRect(575, cpuY, 10, padH);
+
+  c.fillStyle = "white";
+  c.beginPath();
+  c.arc(ball.x, ball.y, 7, 0, Math.PI * 2);
+  c.fill();
 }
 
-function update() {
-  if (!running) return;
+function tick() {
+  if (!playing) return;
   ball.x += ball.dx;
   ball.y += ball.dy;
 
-  if (ball.y < 7 || ball.y > 353) ball.dy *= -1;
-  if (ball.x < 32 && ball.y > you && ball.y < you + 70) ball.dx = Math.abs(ball.dx) * 1.04;
-  if (ball.x > 568 && ball.y > cpu && ball.y < cpu + 70) ball.dx = -Math.abs(ball.dx) * 1.04;
+  if (ball.y < 7 || ball.y > 353) ball.dy = -ball.dy;
 
-  cpu = clamp(cpu + (ball.y - 35 - cpu) * 0.07);
+  // the ball gets a bit faster on every hit
+  if (ball.x < 32 && ball.y > myY && ball.y < myY + padH) ball.dx = Math.abs(ball.dx) * 1.04;
+  if (ball.x > 568 && ball.y > cpuY && ball.y < cpuY + padH) ball.dx = -Math.abs(ball.dx) * 1.04;
 
-  if (ball.x < 0) { score[1]++; serve(1); }
-  if (ball.x > 600) { score[0]++; serve(-1); }
+  // cpu is slow on purpose so you can actually win
+  cpuY = limit(cpuY + (ball.y - padH / 2 - cpuY) * 0.07);
 
-  youEl.textContent = score[0];
-  cpuEl.textContent = score[1];
+  if (ball.x < 0) {
+    cpuScore++;
+    newBall(1);
+  }
+  if (ball.x > 600) {
+    myScore++;
+    newBall(-1);
+  }
+
+  showScore();
   draw();
-  raf = requestAnimationFrame(update);
+  loop = requestAnimationFrame(tick);
 }
 
-function stop() {
-  running = false;
-  cancelAnimationFrame(raf);
-  startBtn.textContent = 'Start';
+function stopGame() {
+  playing = false;
+  cancelAnimationFrame(loop);
+  startBtn.textContent = "Start";
   draw();
 }
 
-startBtn.onclick = () => {
-  if (running) return;
-  running = true;
-  startBtn.textContent = 'Playing...';
-  update();
+startBtn.onclick = function () {
+  if (playing) return;
+  playing = true;
+  startBtn.textContent = "Playing...";
+  tick();
 };
 
-document.getElementById('resetGame').onclick = () => {
-  stop();
-  score = [0, 0];
-  you = cpu = 145;
-  serve();
-  youEl.textContent = cpuEl.textContent = 0;
+document.getElementById("resetGame").onclick = function () {
+  stopGame();
+  myScore = 0;
+  cpuScore = 0;
+  myY = 145;
+  cpuY = 145;
+  newBall();
+  showScore();
   draw();
 };
 
-function moveTo(clientY) {
-  const r = cv.getBoundingClientRect();
-  you = clamp((clientY - r.top) * 360 / r.height - 35);
-  if (!running) draw();
+function movePaddle(clientY) {
+  var r = canvas.getBoundingClientRect();
+  myY = limit((clientY - r.top) * 360 / r.height - padH / 2);
+  if (!playing) draw();
 }
 
-document.addEventListener('keydown', (e) => {
-  const k = e.key.toLowerCase();
-  const up = k === 'arrowup' || k === 'w', down = k === 'arrowdown' || k === 's';
-  if (!up && !down) return;
+document.onkeydown = function (e) {
+  var k = e.key.toLowerCase();
+  if (k == "arrowup" || k == "w") {
+    myY = limit(myY - 24);
+  } else if (k == "arrowdown" || k == "s") {
+    myY = limit(myY + 24);
+  } else {
+    return;
+  }
   e.preventDefault();
-  you = clamp(you + (up ? -24 : 24));
-  if (!running) draw();
-});
+  if (!playing) draw();
+};
 
-cv.addEventListener('pointermove', (e) => {
-  if (e.pointerType === 'touch' || e.buttons) moveTo(e.clientY);
-});
-cv.addEventListener('pointerdown', (e) => {
-  cv.setPointerCapture(e.pointerId);
-  moveTo(e.clientY);
-});
+canvas.onpointerdown = function (e) {
+  canvas.setPointerCapture(e.pointerId);
+  movePaddle(e.clientY);
+};
+canvas.onpointermove = function (e) {
+  if (e.pointerType == "touch" || e.buttons) movePaddle(e.clientY);
+};
 
-serve();
+newBall();
 draw();
 </script>
 </body>
