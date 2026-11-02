@@ -1,24 +1,29 @@
-hello!
+                 Iyad Portfolio
 
-I am Iyad and this is my portfolio!
-
-this portfolio have three small pages:
-
-first page wich is a small description about myself 
-
-second page for contacts so maybe somebody want to reach out for some unknown reasons maybe making a project together!
-
-and ping pong!! like if you're bored reading about me you can play there , it easy trust
-
-challenges:
-i didn't have such hard time doing this just drawing the assets wich i considered fun!
-
-goal:
-i made this for a program but I also took the chance for me to create my own small website!
-
-what i like about this is the ping pong and the floating stickers wich are made by me but anyone can use them!
-
-that all and also this project was mainly made for stardance program for hack club!
+this portfolio have three pages , first description page about me , second conatct page and third a mini ping pong game
 
 
-if you want to contact me , contact by email wich is the more effective daliyoucefiyad2009@gmail.com
+
+i used only two main languages html and css 
+and some JavaScript for the intersections and the ping pong
+
+there are 7 stickers are all made by me in ibis paint each one represent something as this
+broccoli because i hate it
+skull because somehow i felt i need to make it
+orange because i like it
+the cool purple eye because it is cool 
+the heart because why not
+the star and the blue moon because they are nice !
+
+feel free to use them if you want
+
+the site describes me in short form where i generally live and what i am into
+
+the second page is for contacts wich i have email as primary contact and GitHub and Instagram as fallbacks
+
+and lastly good calming pingpong so you dont get bored in my site since i wont allow that
+
+try it out here
+
+                https://snetchy09.github.io/iyad-small-portfolio-/
+
