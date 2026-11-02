@@ -24,8 +24,6 @@ the second page is for contacts wich i have email as primary contact and GitHub 
 
 and lastly good calming pingpong so you dont get bored in my site since i wont allow that
 
-try it out here
-
-                [Link Text](https://snetchy09.github.io/iyad-small-portfolio-/)
+try it out here [HERE]([https://snetchy09.github.io/iyad-small-portfolio-/](https://snetchy09.github.io/Iyad-small-portfolio-/))
 
 <img width="720" height="1600" alt="Screenshot_2026-11-02-17-37-15-857_com foxdebug acodefree" src="https://github.com/user-attachments/assets/04756e8b-55f7-4527-8bb6-cec1f4dcabac" />
