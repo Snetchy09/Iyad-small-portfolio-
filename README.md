@@ -1,18 +1,20 @@
 hello!
 
-this portfolio have three pages:
+I am Iyad and this is my portfolio!
 
-description page wich i tell about myself 
+this portfolio have three small pages:
 
-contact page so maybe somebody want to reach out for some unknown reasons
+first page wich is a small description about myself 
 
-and ping pong!! like if you're bored reading about me you can play there
+second page for contacts so maybe somebody want to reach out for some unknown reasons maybe making a project together!
+
+and ping pong!! like if you're bored reading about me you can play there , it easy trust
 
 challenges:
 i didn't have such hard time doing this just drawing the assets wich i considered fun!
 
 goal:
-i made this for a program but also it was the cause for me to create my own small website!
+i made this for a program but I also took the chance for me to create my own small website!
 
 what i like about this is the ping pong and the floating stickers wich are made by me but anyone can use them!
 
